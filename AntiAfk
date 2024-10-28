@@ -1,3 +1,5 @@
+-- Made By death
+
 wait(0.5)
 local Main = Instance.new("ScreenGui")
 local Title = Instance.new("TextLabel")
