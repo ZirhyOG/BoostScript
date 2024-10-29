@@ -92,6 +92,45 @@ Tab:AddButton({
   	end    
 })
 
+local Tab = Window:MakeTab({
+	Name = "Troll v2",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+--[[
+Name = <string> - The name of the button.
+Callback = <function> - The function of the button.
+]]
+Tab:AddButton({
+	Name = "BootSpy",
+	Callback = function()
+      		loadstring(game:HttpGet("https://raw.githubusercontent.com/ForlornWindow46/Roblox-Scripts/main/bootspy.lua"))()
+  	end    
+})
+
+--[[
+Name = <string> - The name of the button.
+Callback = <function> - The function of the button.
+]]
+Tab:AddButton({
+	Name = "Wynerd",
+	Callback = function()
+      		loadstring(game:HttpGet("https://raw.githubusercontent.com/Imalwibest/Imalwibest/main/wynerdV2.lua",true))()
+  	end    
+})
+
+--[[
+Name = <string> - The name of the button.
+Callback = <function> - The function of the button.
+]]
+Tab:AddButton({
+	Name = "Troll Aura",
+	Callback = function()
+      		loadstring(game:HttpGet("https://pastefy.app/HMPrXacS/raw"))()
+  	end    
+})
+
 --[[
 Name = <string> - The name of the button.
 Callback = <function> - The function of the button.
