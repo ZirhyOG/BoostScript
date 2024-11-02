@@ -1,4 +1,3 @@
--- booster
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -166,12 +165,12 @@ end)
 UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
     if gameProcessedEvent then return end
 
-    if input.UserInputType == Enum.UserInputType.Gamepad1 then
-        if input.KeyCode == Enum.KeyCode.DPadRight then
-            isBoosting = true
-            lastUpdateTime = tick()  -- Reset time for boost increase
-            currentBoostForce = baseBoostForce  -- Reset to base speed
-        end
+    -- Start boost with Gamepad D-Pad Right or "F" key
+    if (input.UserInputType == Enum.UserInputType.Gamepad1 and input.KeyCode == Enum.KeyCode.DPadRight) or
+       (input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.F) then
+        isBoosting = true
+        lastUpdateTime = tick()  -- Reset time for boost increase
+        currentBoostForce = baseBoostForce  -- Reset to base speed
     end
 end)
 
@@ -179,11 +178,11 @@ end)
 UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
     if gameProcessedEvent then return end
 
-    if input.UserInputType == Enum.UserInputType.Gamepad1 then
-        if input.KeyCode == Enum.KeyCode.DPadRight then
-            isBoosting = false  -- Stop boosting
-            currentBoostForce = baseBoostForce  -- Reset boost speed
-        end
+    -- Stop boost with Gamepad D-Pad Right or "F" key
+    if (input.UserInputType == Enum.UserInputType.Gamepad1 and input.KeyCode == Enum.KeyCode.DPadRight) or
+       (input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.F) then
+        isBoosting = false  -- Stop boosting
+        currentBoostForce = baseBoostForce  -- Reset boost speed
     end
 end)
 
