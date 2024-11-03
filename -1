@@ -1,0 +1,94 @@
+-- Get the player's name automatically for client-sided use
+local Players = game:GetService("Players")
+local playerName = Players.LocalPlayer.Name  -- Automatically sets the player's name
+
+-- Function to find and update springs in the car owned by the player
+local function updateOwnedCarSprings(playerName)
+    -- Access the Cars folder in the workspace
+    local carsFolder = workspace:FindFirstChild("Cars")
+    if not carsFolder then
+        warn("No Cars folder found in workspace.")
+        return
+    end
+
+    -- Iterate through each car model in Cars
+    for _, carModel in pairs(carsFolder:GetChildren()) do
+        if carModel:IsA("Model") then
+            -- Look for DriveSeat in each car model
+            local driveSeat = carModel:FindFirstChild("DriveSeat")
+            if driveSeat then
+                -- Check for carOwner attribute within DriveSeat
+                local carOwner = driveSeat:FindFirstChild("carOwner")
+                if carOwner and carOwner:IsA("StringValue") and carOwner.Value == playerName then
+                    -- Car owned by player found, proceed with updating springs
+
+                    -- Find the Wheels model within the car model
+                    local wheelsModel = carModel:FindFirstChild("Wheels")
+                    if not wheelsModel then
+                        warn("No Wheels model found in the car.")
+                        return
+                    end
+
+                    -- List of wheel names to search inside Wheels model
+                    local wheelNames = {"FL", "FR", "RL", "RR"}
+
+                    -- Iterate through each wheel name
+                    for _, wheelName in pairs(wheelNames) do
+                        local wheelPart = wheelsModel:FindFirstChild(wheelName)
+                        
+                        if wheelPart then
+                            -- Look for a child named 'Spring' within each wheel
+                            local spring = wheelPart:FindFirstChild("Spring")
+                            
+                            if spring then
+                                -- Attempt to retrieve MinLength and MaxLength values from properties of Spring
+                                local minLength = spring.MinLength  -- Direct access to property
+                                local maxLength = spring.MaxLength  -- Direct access to property
+
+                                -- Check and update MinLength only if it hasn't been updated yet
+                                if minLength and type(minLength) == "number" and minLength > 0 then
+                                    spring.MinLength = minLength - 1 -- Decrement the value
+                                elseif minLength and type(minLength) == "string" then
+                                    local minLengthValue = tonumber(minLength)
+                                    if minLengthValue and minLengthValue > 0 then
+                                        spring.MinLength = tostring(minLengthValue - 1) -- Decrement and convert back to string
+                                    else
+                                        warn("MinLength is not a valid number in Spring of " .. wheelName)
+                                    end
+                                else
+                                    warn("MinLength not found or is not a valid type in Spring of " .. wheelName)
+                                end
+
+                                -- Check and update MaxLength only if it hasn't been updated yet
+                                if maxLength and type(maxLength) == "number" and maxLength > 0 then
+                                    spring.MaxLength = maxLength - 1 -- Decrement the value
+                                elseif maxLength and type(maxLength) == "string" then
+                                    local maxLengthValue = tonumber(maxLength)
+                                    if maxLengthValue and maxLengthValue > 0 then
+                                        spring.MaxLength = tostring(maxLengthValue - 1) -- Decrement and convert back to string
+                                    else
+                                        warn("MaxLength is not a valid number in Spring of " .. wheelName)
+                                    end
+                                else
+                                    warn("MaxLength not found or is not a valid type in Spring of " .. wheelName)
+                                end
+                            else
+                                warn("Spring not found in " .. wheelName)
+                            end
+                        else
+                            warn(wheelName .. " part not found in Wheels model.")
+                        end
+                    end
+
+                    -- End function after updating the owned car's springs
+                    return
+                end
+            end
+        end
+    end
+
+    warn("No car owned by " .. playerName .. " was found.")
+end
+
+-- Call the function using the automatically detected player name
+updateOwnedCarSprings(playerName)
