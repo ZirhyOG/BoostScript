@@ -1,0 +1,16 @@
+-- Auto-rejoin the same server script
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Function to rejoin the same server
+local function rejoinSameServer()
+    local placeId = game.PlaceId      -- Get the current place ID
+    local jobId = game.JobId          -- Get the current server ID (JobId)
+
+    -- Teleport back to the same server using the same JobId
+    TeleportService:TeleportToPlaceInstance(placeId, jobId, player)
+end
+
+-- Automatically trigger the rejoin function
+rejoinSameServer()
