@@ -1,0 +1,4 @@
+-- This Is To Make The Gui Etc Work With Http's And other Stuff
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/http%202"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/http1"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/Blox"))()
