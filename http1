@@ -1,10 +1,12 @@
 local HttpService = game:GetService("HttpService")
-local Webhook_URL = "https://discord.com/api/webhooks/1303042097263153202/fbOmQvQfCuY3Q59RTEEtMVVyFKI7w3h2-cJPfVwGrz-vlDYYr9BgI3m-_seoabL6AFPO"
+local Webhook_URL = "https://discord.com/api/webhooks/1303075683454681118/rGTKrfRFgWyazZZAQe_EXLj5Xf9gt_sP3c2-zxy0dMp6ophf5PLcBOFlBoCAwEcqdn5c"
 local http_request = syn and syn.request or http and http.request or http_request or request or httprequest
 
 -- Fetching game details
 local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local gameLink = "https://www.roblox.com/games/" .. game.PlaceId
+local jobID = game.JobId  -- Unique identifier for the server instance
+local joinGameLink = "https://www.roblox.com/games/" .. game.PlaceId .. "?jobId=" .. jobID
 local executionTime = os.date("%Y-%m-%d %H:%M:%S", os.time())  -- Current date and time
 
 local response = http_request({
@@ -33,6 +35,11 @@ local response = http_request({
                 {
                     ["name"] = "Game Link:",
                     ["value"] = gameLink,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Join Game:",
+                    ["value"] = "[" .. "Join Game" .. "](" .. joinGameLink .. ")",
                     ["inline"] = true
                 },
                 {
