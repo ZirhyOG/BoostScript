@@ -1,0 +1,196 @@
+-- Services
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+-- Variables
+local baseBoostForce = 200           -- Base boost speed for insane speed
+local boostIncreaseRate = 20         -- Rate of increase for boost force
+local boostIncreaseInterval = 0.1    -- Time interval for increasing boost
+local character
+local humanoidRootPart
+local isBoosting = false
+local currentBoostForce = baseBoostForce
+local lastUpdateTime = tick()
+
+-- Ground-related forces
+local hoverHeight = 6.6                -- Desired hover height
+local hoverForce = 50                -- High hover force based on distance from ground
+local hoverDamping = 1.5             -- Damping to stabilize hover
+local groundDetectionDistance = 8    -- Distance to detect ground below the car
+local maxDownwardForce = -50         -- Max downward force to prevent flying off
+local speedGroundForceMultiplier = 0.2 -- Scales downward force with speed
+
+-- Speed stabilization and limits
+local speedStabilizationThreshold = 300 -- Speed at which stability adjustments intensify
+local maxTiltAngle = math.rad(3)         -- Maximum tilt allowed (3 degrees for tight control)
+local tiltCorrectionFactor = 0.5         -- Stronger correction factor to avoid tilting
+local maxTurnRate = 60                    -- Max rate of turn
+local speedTurnDamping = 0.4              -- Damping for turns at high speeds
+
+-- Dynamic adjustment based on speed
+local weightFactor = 2                     -- Adjust for heavy vehicles
+local angularDampingBase = 5000            -- Strong angular damping to reduce spinning
+
+-- Function to set character and humanoidRootPart after respawn
+local function onCharacterAdded(char)
+    character = char
+    humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+end
+
+-- Function to get the car's weight (mass)
+local function getCarWeight()
+    if humanoidRootPart then
+        return humanoidRootPart:GetMass() * weightFactor
+    end
+    return 100 -- Default weight if not found
+end
+
+-- Function to apply smooth forward boost
+local function boostForward()
+    if humanoidRootPart then
+        local forwardDirection = humanoidRootPart.CFrame.LookVector
+        humanoidRootPart.Velocity = Vector3.new(
+            forwardDirection.X * currentBoostForce,
+            humanoidRootPart.Velocity.Y,  -- Preserve vertical velocity
+            forwardDirection.Z * currentBoostForce
+        )
+    end
+end
+
+-- Function to maintain hover and ground stability
+local function maintainHoverStability()
+    if humanoidRootPart then
+        local velocity = humanoidRootPart.Velocity
+        local carWeight = getCarWeight()
+
+        -- Raycast down to detect ground
+        local rayOrigin = humanoidRootPart.Position
+        local rayDirection = Vector3.new(0, -groundDetectionDistance, 0)
+        local ray = Ray.new(rayOrigin, rayDirection)
+        local hit, hitPosition = workspace:FindPartOnRay(ray, character)
+
+        -- If ground is detected, adjust hover force
+        if hit then
+            local distanceFromGround = (humanoidRootPart.Position - hitPosition).Magnitude
+
+            -- Calculate hover correction based on ground distance
+            local hoverCorrection = (hoverHeight - distanceFromGround) * hoverDamping
+            local hoverForceApplied = math.clamp(hoverForce * carWeight + hoverCorrection, maxDownwardForce, 0)
+
+            -- Apply hover force to keep the car at the desired height
+            humanoidRootPart.Velocity = Vector3.new(
+                velocity.X,
+                velocity.Y + hoverForceApplied,
+                velocity.Z
+            )
+        else
+            -- Apply a soft downward force if not near the ground
+            humanoidRootPart.Velocity = Vector3.new(
+                velocity.X,
+                velocity.Y - 5, -- Gentle downward force
+                velocity.Z
+            )
+        end
+
+        -- Apply downward force based on speed to keep the car grounded
+        local speed = velocity.Magnitude
+        local speedDownwardForce = speed * speedGroundForceMultiplier
+        humanoidRootPart.Velocity = Vector3.new(
+            velocity.X,
+            math.max(velocity.Y - speedDownwardForce, -15),
+            velocity.Z
+        )
+    end
+end
+
+-- Function to stabilize rotation and prevent flipping
+local function stabilizeRotation()
+    if humanoidRootPart then
+        local carWeight = getCarWeight()
+
+        -- Keep the car level by limiting tilt angles
+        local _, yaw, _ = humanoidRootPart.CFrame:ToOrientation()
+        local currentTilt = humanoidRootPart.CFrame.LookVector:Dot(Vector3.new(0, 1, 0))
+
+        -- Correct if the tilt exceeds the max allowed angle
+        if math.abs(currentTilt) > maxTiltAngle then
+            local flatCFrame = CFrame.new(humanoidRootPart.Position) * CFrame.Angles(0, yaw, 0)
+            humanoidRootPart.CFrame = flatCFrame:Lerp(humanoidRootPart.CFrame, tiltCorrectionFactor)
+        end
+
+        -- Apply high angular damping to prevent excessive spinning
+        humanoidRootPart.RotVelocity = humanoidRootPart.RotVelocity * 0.1  -- Strong damping
+    end
+end
+
+-- Function to adapt turning based on speed
+local function adjustTurnBasedOnSpeed()
+    if humanoidRootPart then
+        local speed = humanoidRootPart.Velocity.Magnitude
+        local speedFactor = 1 / (1 + (speed * speedTurnDamping))  -- Reduce turn rate with higher speed
+        local currentYawVelocity = humanoidRootPart.RotVelocity.Y
+
+        -- Limit yaw rotation based on speed
+        local clampedYawVelocity = math.clamp(currentYawVelocity, -maxTurnRate * speedFactor, maxTurnRate * speedFactor)
+        humanoidRootPart.RotVelocity = Vector3.new(
+            humanoidRootPart.RotVelocity.X,
+            clampedYawVelocity,
+            humanoidRootPart.RotVelocity.Z
+        )
+    end
+end
+
+-- Function to gradually increase the boost speed
+local function increaseBoostForce()
+    local currentTime = tick()
+    if currentTime - lastUpdateTime >= boostIncreaseInterval then
+        currentBoostForce = currentBoostForce + boostIncreaseRate  -- Continuously increase boost
+        lastUpdateTime = currentTime
+    end
+end
+
+-- Main update loop for boosting, stabilization, and ground contact
+RunService.Heartbeat:Connect(function()
+    if isBoosting then
+        increaseBoostForce()         -- Gradually increase boost
+        boostForward()               -- Apply boost
+        maintainHoverStability()     -- Keep grounded and prevent flying or digging
+        stabilizeRotation()          -- Stabilize rotation and prevent tilting
+        adjustTurnBasedOnSpeed()     -- Adjust turning rate for high speeds
+    end
+end)
+
+-- Input detection for boosting (Hold RT to boost)
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if gameProcessedEvent then return end
+
+    if input.UserInputType == Enum.UserInputType.Gamepad1 then
+        if input.KeyCode == Enum.KeyCode.ButtonR2 then  -- Right Trigger
+            isBoosting = true
+            lastUpdateTime = tick()  -- Reset time for boost increase
+            currentBoostForce = baseBoostForce  -- Reset to base speed
+        end
+    end
+end)
+
+-- Stop boosting when RT is released
+UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
+    if gameProcessedEvent then return end
+
+    if input.UserInputType == Enum.UserInputType.Gamepad1 then
+        if input.KeyCode == Enum.KeyCode.ButtonR2 then  -- Right Trigger
+            isBoosting = false  -- Stop boosting
+            currentBoostForce = baseBoostForce  -- Reset boost speed
+        end
+    end
+end)
+
+-- Player respawn event handler
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Initialize current character when the script starts
+if player.Character then
+    onCharacterAdded(player.Character)
+end
