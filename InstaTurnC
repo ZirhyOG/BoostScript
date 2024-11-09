@@ -1,0 +1,79 @@
+local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local humanoid = character:WaitForChild("Humanoid")
+local vehicleSeat = character:FindFirstChild("VehicleSeat")  -- Used for vehicles if applicable
+
+-- Maximum turn speed and smoothing factor
+local maxTurnSpeed = math.rad(90)  -- Max turn speed in radians per second
+local smoothingFactor = 0.1  -- Smaller value makes smoother turns
+local currentAngle = 0  -- Stores the current direction of the character (in radians)
+
+-- Function to control movement (forward and backward) using LT/RT
+local function controlMovement()
+    if vehicleSeat then
+        -- Get throttle value from LT/RT (forward is positive, reverse is negative)
+        local throttle = vehicleSeat.Throttle
+        
+        -- We’ll update the vehicle's velocity based on the throttle values
+        if throttle ~= 0 then
+            local direction = Vector3.new(0, 0, throttle)  -- Moving along the Z-axis for simplicity
+            vehicleSeat.CFrame = vehicleSeat.CFrame * CFrame.new(direction * throttle)
+        end
+    end
+end
+
+-- Function to smoothly rotate the character
+local function controlRotation()
+    -- Get the joystick movement direction (X and Z axes) for rotation
+    local moveDirection = Vector3.new(humanoid.MoveDirection.X, 0, humanoid.MoveDirection.Z)
+    
+    -- Only rotate if the joystick is being moved
+    local moveMagnitude = moveDirection.magnitude
+    if moveMagnitude == 0 then
+        return  -- Don't rotate if the joystick is not being moved
+    end
+    
+    -- Calculate the target angle based on joystick direction
+    local targetAngle = math.atan2(moveDirection.X, moveDirection.Z)
+    
+    -- Calculate the difference between the current angle and target angle
+    local angleDifference = targetAngle - currentAngle
+    
+    -- Normalize the angle difference to be between -π and π
+    if angleDifference > math.pi then
+        angleDifference = angleDifference - 2 * math.pi
+    elseif angleDifference < -math.pi then
+        angleDifference = angleDifference + 2 * math.pi
+    end
+    
+    -- Smoothly interpolate between the current angle and target angle
+    currentAngle = currentAngle + math.clamp(angleDifference, -maxTurnSpeed, maxTurnSpeed) * smoothingFactor
+    
+    -- Wrap angle to stay within -π and π
+    if currentAngle > math.pi then
+        currentAngle = currentAngle - 2 * math.pi
+    elseif currentAngle < -math.pi then
+        currentAngle = currentAngle + 2 * math.pi
+    end
+    
+    -- Apply smooth rotation to the character
+    local directionVector = Vector3.new(math.sin(currentAngle), 0, math.cos(currentAngle))
+    
+    -- Update the rotation of the character's HumanoidRootPart smoothly
+    humanoidRootPart.CFrame = humanoidRootPart.CFrame:Lerp(CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + directionVector), smoothingFactor)
+end
+
+-- Main loop: Run all functions smoothly on every frame
+RunService.RenderStepped:Connect(function()
+    -- 1. Control movement (forward/backward) using LT/RT (vehicle or normal movement)
+    controlMovement()
+
+    -- 2. Control rotation (turning) smoothly based on joystick movement
+    if humanoid.MoveDirection.magnitude > 0 then
+        controlRotation()
+    end
+    
+    -- 3. Camera manipulation is not included, so the camera will behave normally in Roblox
+end)
