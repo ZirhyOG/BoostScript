@@ -2,6 +2,7 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera  -- Reference to the camera
 
 -- Variables
 local baseBoostForce = 200           -- Base boost speed for insane speed
@@ -46,13 +47,13 @@ local function getCarWeight()
     return 100 -- Default weight if not found
 end
 
--- Function to apply smooth forward boost
+-- Function to apply smooth boost in the direction of the camera
 local function boostForward()
     if humanoidRootPart then
-        local forwardDirection = humanoidRootPart.CFrame.LookVector
+        local forwardDirection = camera.CFrame.LookVector  -- Get the camera's direction
         humanoidRootPart.Velocity = Vector3.new(
             forwardDirection.X * currentBoostForce,
-            humanoidRootPart.Velocity.Y,  -- Preserve vertical velocity
+            forwardDirection.Y * currentBoostForce,  -- Allow vertical component based on camera direction
             forwardDirection.Z * currentBoostForce
         )
     end
