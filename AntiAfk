@@ -1,50 +1,110 @@
-print("T: T- Button gives you inf xp of 250k and uses them")
-print("Y: Y- Button teleports you to mostly every shape kinda like U but for shapes")
-print("U: U- Button Teleports you to every player killing them make sure u have good body damage and health")
-wait(1)
-local ba = Instance.new("ScreenGui")
-local ca = Instance.new("TextLabel")
-local da = Instance.new("Frame")
-local _b = Instance.new("TextLabel")
-local ab = Instance.new("TextLabel")
-ba.Parent = game.CoreGui
-ba.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ca.Parent = ba
-ca.Active = true
-ca.BackgroundColor3 = Color3.new(19.176471, 12.176471, 21.176471)
-ca.Draggable = true
-ca.Position = UDim2.new(0.698610067, 0, 0.098096624, 0)
-ca.Size = UDim2.new(0, 304, 0, 52)
-ca.Font = Enum.Font.SourceSansSemibold
-ca.Text = "No Afk Kick"
-ca.TextColor3 = Color3.new(0, 0, 0)
-ca.TextSize = 22
-da.Parent = ca
-da.BackgroundColor3 = Color3.new(21.196078, 43.196078, 12.196078)
-da.Position = UDim2.new(0, 0, 1.0192306, 0)
-da.Size = UDim2.new(0, 304, 0, 107)
-_b.Parent = da
-_b.BackgroundColor3 = Color3.new(19.176471, 12.176471, 21.176471)
-_b.Position = UDim2.new(0, 0, 0.800455689, 0)
-_b.Size = UDim2.new(0, 304, 0, 21)
-_b.Font = Enum.Font.Arial
-_b.Text = "Discord: Centipede"
-_b.TextColor3 = Color3.new(0, 0, 0)
-_b.TextSize = 20
-ab.Parent = da
-ab.BackgroundColor3 = Color3.new(7.176471, 12.176471, 54.176471)
-ab.Position = UDim2.new(0, 0, 0.158377379, 0)
-ab.Size = UDim2.new(0, 304, 0, 44)
-ab.Font = Enum.Font.ArialBold
-ab.Text = "Status: Online"
-ab.TextColor3 = Color3.new(0, 0, 0)
-ab.TextSize = 20
+wait(0)
+local Main = Instance.new("ScreenGui")
+local Title = Instance.new("TextLabel")
+local MainFrame = Instance.new("Frame")
+local EndTitle = Instance.new("TextLabel")
+local AfkStatus = Instance.new("TextLabel")
+local CentipedeBox = Instance.new("Frame") -- New frame for the "Centipede" text
+local CentipedeText = Instance.new("TextLabel") -- Text label inside the new frame
+local TitleCorner = Instance.new("UICorner")
+local MainFrameCorner = Instance.new("UICorner")
+local EndTitleCorner = Instance.new("UICorner")
+local AfkStatusCorner = Instance.new("UICorner")
+local CentipedeBoxCorner = Instance.new("UICorner") -- UICorner for the new frame
 
-local bb = game:service('VirtualUser')
-game:service('Players').LocalPlayer.Idled:Connect(function()
-    bb:CaptureController()
-    bb:ClickButton2(Vector2.new())
-    ab.Text = "You went idle and ROBLOX tried to kick you but I Stopped it!"
+Main.Parent = game.CoreGui
+
+Main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Title.Parent = Main
+
+Title.Active = true
+Title.BackgroundColor3 = Color3.fromRGB(54, 57, 63)  -- Dark Discord background
+Title.BorderColor3 = Color3.fromRGB(114, 137, 218)  -- Discord's blue
+Title.Draggable = true
+Title.Position = UDim2.new(0.698610067, 0, 0.098096624, 0)
+Title.Size = UDim2.new(0, 370, 0, 52)
+Title.Font = Enum.Font.SourceSansBold
+Title.Text = "Anti Afk | by Centipede"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text for contrast
+Title.TextSize = 22
+
+-- UICorner for Title
+TitleCorner.Parent = Title
+TitleCorner.CornerRadius = UDim.new(0, 12)
+
+MainFrame.Parent = Title
+
+MainFrame.BackgroundColor3 = Color3.fromRGB(54, 57, 63)  -- Dark Discord background
+MainFrame.BorderColor3 = Color3.fromRGB(114, 137, 218)  -- Discord's blue
+MainFrame.Position = UDim2.new(0, 0, 1.0192306, 0)
+MainFrame.Size = UDim2.new(0, 370, 0, 107)
+
+-- UICorner for MainFrame
+MainFrameCorner.Parent = MainFrame
+MainFrameCorner.CornerRadius = UDim.new(0, 12)
+
+EndTitle.Parent = MainFrame
+EndTitle.BackgroundColor3 = Color3.fromRGB(54, 57, 63)
+EndTitle.BorderColor3 = Color3.fromRGB(114, 137, 218)
+EndTitle.Position = UDim2.new(0, 0, 0.800455689, 0)
+EndTitle.Size = UDim2.new(0, 370, 0, 21)
+EndTitle.Font = Enum.Font.SourceSansBold
+EndTitle.Text = "Centipede"
+EndTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+EndTitle.TextSize = 20
+
+-- UICorner for EndTitle
+EndTitleCorner.Parent = EndTitle
+EndTitleCorner.CornerRadius = UDim.new(0, 6)
+
+AfkStatus.Parent = MainFrame
+
+AfkStatus.BackgroundColor3 = Color3.fromRGB(54, 57, 63)
+AfkStatus.BorderColor3 = Color3.fromRGB(114, 137, 218)
+AfkStatus.Position = UDim2.new(0, 0, 0.158377, 0)
+AfkStatus.Size = UDim2.new(0, 370, 0, 44)
+AfkStatus.Font = Enum.Font.SourceSansBold
+AfkStatus.Text = "Anti Afk Status: Active"
+AfkStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+AfkStatus.TextSize = 20
+
+-- UICorner for AfkStatus
+AfkStatusCorner.Parent = AfkStatus
+AfkStatusCorner.CornerRadius = UDim.new(0, 6)
+
+-- Create the new box for "Centipede"
+CentipedeBox.Parent = Main
+CentipedeBox.BackgroundColor3 = Color3.fromRGB(54, 57, 63)  -- Dark Discord background
+CentipedeBox.BorderColor3 = Color3.fromRGB(114, 137, 218)  -- Discord's blue
+CentipedeBox.Position = UDim2.new(0.698610067, 0, 1.5, 0)  -- Adjust position to be below the MainFrame
+CentipedeBox.Size = UDim2.new(0, 370, 0, 52)  -- Same width and height as Title
+CentipedeBox.BorderSizePixel = 2
+
+-- UICorner for CentipedeBox
+CentipedeBoxCorner.Parent = CentipedeBox
+CentipedeBoxCorner.CornerRadius = UDim.new(0, 12)
+
+-- Create the "Centipede" text inside the new box
+CentipedeText.Parent = CentipedeBox
+CentipedeText.BackgroundColor3 = Color3.fromRGB(54, 57, 63)  -- Dark Discord background
+CentipedeText.BorderColor3 = Color3.fromRGB(114, 137, 218)  -- Discord's blue
+CentipedeText.Size = UDim2.new(0, 370, 0, 52)
+CentipedeText.Font = Enum.Font.SourceSansBold
+CentipedeText.Text = "Centipede"
+CentipedeText.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text for contrast
+CentipedeText.TextSize = 22
+CentipedeText.TextAlign = Enum.TextXAlignment.Center
+CentipedeText.TextYAlignment = Enum.TextYAlignment.Center
+
+local abc = game:service'VirtualUser'
+
+game:service'Players'.LocalPlayer.Idled:connect(function()
+
+    AfkStatus:CaptureController()
+    AfkStatus:ClickButton2(Vector2.new())
+
+    AfkStatus.Text = "Nope"
     wait(2)
-    ab.Text = "Script Re-Enabled"
+    AfkStatus.Text = "Anti Afk Status: Active"
 end)
