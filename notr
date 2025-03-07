@@ -1,0 +1,23 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Centipede", "DarkTheme")
+ 
+-- Main
+local Main = Window:NewTab("Main")
+local MainSection = Main:NewSection("Main")
+ 
+ 
+MainSection:NewButton("Fling Npc", "Will Remove Npx kind of", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/2567-rblx/scripts/main/Notoriety/RemoveNPCs.lua",true))()
+end)
+ 
+MainSection:NewButton("Stamina Increase", "Increase your stamina", function()
+    local plr = game.Players.LocalPlayer.Name
+    local v = game:GetService("Workspace").Criminals[plr]
+    v.MaxStamina.Value = 1000000
+end)
+ 
+MainSection:NewButton("Fill Stamina", "Fills Stamina", function()
+    local plr = game.Players.LocalPlayer.Name
+    local v = game:GetService("Workspace").Criminals[plr]
+    v.Stamina.Value = 1000000
+end)
