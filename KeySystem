@@ -21,7 +21,7 @@ local ValidKeys = {
     ["Adam"] = 8060659686,
     ["Centipede"] = 7886711785,
     ["Musa"] = 1076239533,
-    ["SecretKey"] = 0,
+    ["fuzzy"] = 5500707165,
     ["VIPAccess"] = 0
 }
 
