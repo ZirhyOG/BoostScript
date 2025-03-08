@@ -28,5 +28,13 @@ local MiscSection = Misc:NewSection("Misc")
 
 
 MiscSection:NewButton("Cams", "Shows you where cameras are", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/h", true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/h", true))();
+end)
+
+MiscSection:NewButton("Tp bags to van", "Most maps work", function()
+    for i,v in pairs(game:GetService("Workspace").Bags:GetDescendants()) do
+        if v.Name == 'MoneyBag' then
+        v.CFrame = game:GetService("Workspace").BagSecuredArea.FloorPart.CFrame
+        end
+        end
 end)
