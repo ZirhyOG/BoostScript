@@ -1,0 +1,57 @@
+                                                                                 local Players=game:   
+                                                                        GetService("Players");local ReplicatedStorage=  
+                                                                    game:GetService("ReplicatedStorage");local MarketplaceService 
+                                                                =game:GetService("MarketplaceService");local UserInputService=game:     
+                                                            GetService("UserInputService");local productId_XPCapsule=1839620112;local     
+                                                          productId_ReleaseCrate=1877459092;local productId_SkinCrate=1839593865;local      
+                                                        productId_AuraCrate=1839593700;local productId_HatsCrate=1839594109;local LocalPlayer 
+                                                      =Players.LocalPlayer;local toggleLoops=false;local autoRebirth=false;local VirtualUser=   
+                                                    game:GetService("VirtualUser");Players.LocalPlayer.Idled:Connect(function() VirtualUser:      
+                                                  CaptureController();VirtualUser:ClickButton2(Vector2.new());end);local function purchaseAndUseXP( 
+                                                  ) while toggleLoops do local inventory=LocalPlayer:FindFirstChild("inventory");if inventory then    
+                                                local xpCapsule=inventory:FindFirstChild("XP Capsule");if xpCapsule then ReplicatedStorage.Inventory.   
+                                                UpdateUI:FireServer(xpCapsule);else pcall(function() MarketplaceService:                                  
+                                              SignalPromptProductPurchaseFinished(LocalPlayer.UserId,productId_XPCapsule,true);end);end end task.wait(0);   
+                                              end end local function autoBulletDamage() while autoRebirth do local skillArgs={[1]="Bullet Damage",[2]=1,[3] 
+                                            ="Bullet Damage"};ReplicatedStorage.Events.UpdatePlayerstatUI:FireServer(skillArgs);task.wait(0);end end local    
+                                            function toggleXPFarm() toggleLoops= not toggleLoops;if toggleLoops then task.spawn(purchaseAndUseXP);end end local 
+                                           function toggleAutoRebirth() autoRebirth= not autoRebirth;if autoRebirth then task.spawn(autoBulletDamage);end end     
+                                          local function makeDraggable(gui) local dragging,dragInput,mousePos,prevPos=false,nil,nil,nil;gui.InputBegan:Connect(     
+                                          function(input) if (input.UserInputType==Enum.UserInputType.MouseButton1) then dragging=true;mousePos=input.Position;       
+                                          prevPos=gui.Position;end end);gui.InputChanged:Connect(function(input) if (dragging and (input.UserInputType==Enum.         
+                                        UserInputType.MouseMovement)) then local delta=input.Position-mousePos ;gui.Position=UDim2.new(prevPos.X.Scale,prevPos.X.Offset 
+                                         + delta.X ,prevPos.Y.Scale,prevPos.Y.Offset + delta.Y );end end);gui --[[==============================]].InputEnded:Connect(    
+                                        function(input) if (input.UserInputType==Enum.UserInputType --[[============================================]].MouseButton1) then 
+                                         dragging=false;end end);end local optionsGui=Instance. --[[======================================================]]new("ScreenGui" 
+                                      );optionsGui.Parent=game.CoreGui;optionsGui.Enabled=  --[[==========================================================]]true;local        
+                                      optionsFrame=Instance.new("Frame");optionsFrame.    --[[==============================================================]]Size=UDim2.new( 
+                                      0,350,0,500);optionsFrame.Position=UDim2.new(0.5, - --[[================================================================]]175,0.5, -250); 
+                                      optionsFrame.BackgroundColor3=Color3.fromRGB(30,30, --[[==================================================================]]30);          
+                                      optionsFrame.Parent=optionsGui;local cornerOptions= --[[==================================================================]]Instance.new(     
+                                    "UICorner");cornerOptions.CornerRadius=UDim.new(0,12) --[[====================================================================]];             
+                    cornerOptions.Parent=optionsFrame;makeDraggable(optionsFrame);local   --[[====================================================================]]grindButton=    
+              Instance.new("TextButton");grindButton.Size=UDim2.new(0,260,0,40);          --[[======================================================================]]grindButton.  
+            Position=UDim2.new(0.5, -130,0.1,0);grindButton.Text="Toggle Grinding";       --[[======================================================================]]grindButton.  
+          BackgroundColor3=Color3.fromRGB(60,60,60);grindButton.TextColor3=Color3.fromRGB --[[======================================================================]](255,255,255) 
+        ;grindButton.Parent=optionsFrame;local rebirthButton=Instance.new("TextButton");  --[[======================================================================]]rebirthButton 
+        .Size=UDim2.new(0,260,0,40);rebirthButton.Position=UDim2.new(0.5, -130,0.2,0);    --[[======================================================================]]rebirthButton 
+      .Text="Toggle Auto Rebirth";rebirthButton.BackgroundColor3=Color3.fromRGB(60,60,60) --[[======================================================================]];             
+      rebirthButton.TextColor3=Color3.fromRGB(255,255,255);rebirthButton.Parent=            --[[==================================================================]]optionsFrame;   
+      local releaseCrateButton=Instance.new("TextButton");releaseCrateButton.Size=UDim2.new --[[================================================================]](0,260,0,40);     
+    releaseCrateButton.Position=UDim2.new(0.5, -130,0.3,0);releaseCrateButton.Text=         --[[==============================================================]]                  
+    "Purchase Release Crate";releaseCrateButton.BackgroundColor3=Color3.fromRGB(60,60,60);    --[[==========================================================]]releaseCrateButton. 
+    TextColor3=Color3.fromRGB(255,255,255);releaseCrateButton.Parent=optionsFrame;local         --[[====================================================]]skinCrateButton=        
+    Instance.new("TextButton");skinCrateButton.Size=UDim2.new(0,260,0,40);skinCrateButton.        --[[==============================================]]Position=UDim2.new(0.5, - 
+    130,0.4,0);skinCrateButton.Text="Purchase Skin Crate";skinCrateButton.BackgroundColor3=Color3.    --[[====================================]]fromRGB(60,60,60);            
+    skinCrateButton.TextColor3=Color3.fromRGB(255,255,255);skinCrateButton.Parent=optionsFrame;local      --[[========================]]hatsCrateButton=Instance.new(         
+    "TextButton");hatsCrateButton.Size=UDim2.new(0,260,0,40);hatsCrateButton.Position=UDim2.new(0.5, -130,0.5,0);hatsCrateButton.Text="Purchase Hats Crate";hatsCrateButton 
+  .BackgroundColor3=Color3.fromRGB(60,60,60);hatsCrateButton.TextColor3=Color3.fromRGB(255,255,255);hatsCrateButton.Parent=optionsFrame;local auraCrateButton=Instance.   
+  new("TextButton");auraCrateButton.Size=UDim2.new(0,260,0,40);auraCrateButton.Position=UDim2.new(0.5, -130,0.6,0);auraCrateButton.Text="Purchase Aura Crate";          
+  auraCrateButton.BackgroundColor3=Color3.fromRGB(60,60,60);auraCrateButton.TextColor3=Color3.fromRGB(255,255,255);auraCrateButton.Parent=optionsFrame;releaseCrateButton 
+  .MouseButton1Click:Connect(function() pcall(function() MarketplaceService:SignalPromptProductPurchaseFinished(LocalPlayer.UserId,productId_ReleaseCrate,true);end);end) 
+  ;skinCrateButton.MouseButton1Click:Connect(function() pcall(function() MarketplaceService:SignalPromptProductPurchaseFinished(LocalPlayer.UserId,productId_SkinCrate,   
+  true);end);end);hatsCrateButton.MouseButton1Click:Connect(function() pcall(function() MarketplaceService:SignalPromptProductPurchaseFinished(LocalPlayer.UserId,        
+  productId_HatsCrate,true);end);end);auraCrateButton.MouseButton1Click:Connect(function() pcall(function() MarketplaceService:SignalPromptProductPurchaseFinished(       
+  LocalPlayer.UserId,productId_AuraCrate,true);end);end);grindButton.MouseButton1Click:Connect(function() toggleXPFarm();end);rebirthButton.MouseButton1Click:Connect(    
+  function() toggleAutoRebirth();end);local function checkKey() local enteredKey=game:GetService("TextBox").Text;if (allowedKeys[enteredKey]==LocalPlayer.UserId) then    
+  print("Key Validated. Access Granted.");else print("Invalid Key. Access Denied.");LocalPlayer:Kick("Invalid Key. Access Denied.");end end
