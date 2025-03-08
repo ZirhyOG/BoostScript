@@ -1,40 +1,82 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("Centipede", "DarkTheme")
- 
+
 -- Main
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Main")
- 
- 
-MainSection:NewButton("Fling Npc", "Will Remove Npx kind of", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/2567-rblx/scripts/main/Notoriety/RemoveNPCs.lua",true))()
-end)
- 
+
 MainSection:NewButton("Stamina Increase", "Increase your stamina", function()
     local plr = game.Players.LocalPlayer.Name
     local v = game:GetService("Workspace").Criminals[plr]
     v.MaxStamina.Value = 1000000
 end)
- 
+
 MainSection:NewButton("Fill Stamina", "Fills Stamina", function()
     local plr = game.Players.LocalPlayer.Name
     local v = game:GetService("Workspace").Criminals[plr]
     v.Stamina.Value = 1000000
 end)
 
---Misc
+-- Misc
 local Misc = Window:NewTab("Misc")
 local MiscSection = Misc:NewSection("Misc")
 
+-- Misc Button: Kill all police once
+MiscSection:NewButton("Kill All Police Once", "Kills all the police in the game", function()
+    local damageRemote = game:GetService('ReplicatedStorage').RS_Package.Assets.Remotes.Damage
+    local backpack = game:GetService('Players').LocalPlayer.Backpack
+    local pos = Vector3.new()
+
+    local function Damage(char, godmode)
+        pcall(function()
+            coroutine.wrap(function()
+                damageRemote:FireServer('Damage', remoteKey, char:WaitForChild('Humanoid', 10), godmode and -9e9 or 9e9, char:WaitForChild('Head', 5), backpack:GetChildren()[1].Name, pos)
+            end)()
+        end)
+    end
+
+    local police = workspace.Police
+    for i, v in next, police:GetChildren() do
+        Damage(v)
+    end
+end)
+
+-- Misc Button: Kill all police continuously
+local killAllPoliceConnection
+MiscSection:NewButton("Kill All Police Continuously", "Kills all the police continuously", function()
+    local damageRemote = game:GetService('ReplicatedStorage').RS_Package.Assets.Remotes.Damage
+    local backpack = game:GetService('Players').LocalPlayer.Backpack
+    local pos = Vector3.new()
+
+    local function Damage(char, godmode)
+        pcall(function()
+            coroutine.wrap(function()
+                damageRemote:FireServer('Damage', remoteKey, char:WaitForChild('Humanoid', 10), godmode and -9e9 or 9e9, char:WaitForChild('Head', 5), backpack:GetChildren()[1].Name, pos)
+            end)()
+        end)
+    end
+
+    local police = workspace.Police
+    killAllPoliceConnection = police.ChildAdded:Connect(function(char)
+        Damage(char)
+    end)
+end)
+
+-- Misc Button: Stop killing all police
+MiscSection:NewButton("Stop Killing All Police", "Stops killing all the police", function()
+    if killAllPoliceConnection then
+        killAllPoliceConnection:Disconnect()
+        killAllPoliceConnection = nil
+    end
+end)
+
+-- Misc Button: Yell at all citizens
+MiscSection:NewButton("Yell at All Citizens", "Yell at all citizens in the game", function()
+    local citizens = workspace.Citizens
+    local yellRemote = game:GetService('ReplicatedStorage').RS_Package.Remotes.PlayerYell
+    yellRemote:FireServer(citizens:GetChildren())
+end)
 
 MiscSection:NewButton("Cams", "Shows you where cameras are", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/h", true))();
-end)
-
-MiscSection:NewButton("Tp bags to van", "Most maps work", function()
-    for i,v in pairs(game:GetService("Workspace").Bags:GetDescendants()) do
-        if v.Name == 'MoneyBag' then
-        v.CFrame = game:GetService("Workspace").BagSecuredArea.FloorPart.CFrame
-        end
-        end
 end)
