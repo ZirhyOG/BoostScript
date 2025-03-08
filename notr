@@ -23,7 +23,7 @@ MainSection:NewButton("Fill Stamina", "Fills Stamina", function()
 end)
 
 --Misc
-local Misc = Window:NewTab("")
+local Misc = Window:NewTab("Misc")
 local MiscSection = Misc:NewSection("Misc")
 
 
