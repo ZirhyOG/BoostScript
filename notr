@@ -21,3 +21,12 @@ MainSection:NewButton("Fill Stamina", "Fills Stamina", function()
     local v = game:GetService("Workspace").Criminals[plr]
     v.Stamina.Value = 1000000
 end)
+
+--Misc
+local Misc = Window:NewTab("")
+local MiscSection = Misc:NewSection("Misc")
+
+
+MiscSection:NewButton("Cams", "Shows you where cameras are", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/h", true))()
+end)
