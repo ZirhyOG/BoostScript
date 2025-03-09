@@ -5,7 +5,7 @@ local Window = Library.CreateLib("TankFarmX Hub", "DarkTheme")
 local Main = Window:NewTab("Main")
 local MainSection = Main:NewSection("Main")
  MainSection:NewButton("TankFarmX Main Script.", "1", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/TankGameSim", true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/Log%3F%3F%3F%3F", true))()
 end)
  
 MainSection:NewButton("Anti-Afk", "1", function()
