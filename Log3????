@@ -1,0 +1,39 @@
+local args = {
+    [1] = "Body Damage",
+    [2] = false, -- Initially false
+    [3] = 1
+}
+
+local toggle = false  -- Set to false initially (off)
+
+-- Function to start toggling
+local function startToggling()
+    while toggle do
+        -- Toggle the value of args[2]
+        args[2] = not args[2]  -- If it's false, it'll become true, and vice versa
+
+        -- Fire the event with the updated args
+        game:GetService("ReplicatedStorage").Rebirths.ChangeRebirthStats:FireServer(unpack(args))
+        
+        -- Wait for 1 second before toggling again
+        wait(0)
+    end
+end
+
+-- Function to toggle on and off
+local function toggleAction()
+    toggle = not toggle  -- Switch the toggle state
+
+    if toggle then
+        -- Start toggling if it was off
+        startToggling()
+    else
+        -- If toggle is off, stop the action
+        print("Toggling is off")
+    end
+end
+
+-- Example of calling the toggleAction function to start/stop the toggling
+toggleAction()  -- This would start the toggle
+wait(5)  -- Wait for 5 seconds (for example)
+toggleAction()  -- This would stop the toggle
