@@ -1,18 +1,12 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("TankFarmX Hub", "DarkTheme")
- 
--- Main
-local Main = Window:NewTab("Main")
-local MainSection = Main:NewSection("Main")
- MainSection:NewButton("TankFarmX Main Script.", "1", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/Log%3F%3F%3F%3F", true))()
-end)
- 
-MainSection:NewButton("Anti-Afk", "1", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/AntiAfk", true))()
-end)
- 
-MainSection:NewButton("Notoriety Main Script", "1", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/notr", true))()
+--[[
+ .____                  ________ ___.    _____                           __                
+ |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
+ |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
+ |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
+ |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
+         \/          \/         \/    \/                \/     \/     \/                   
+          \_Welcome to LuaObfuscator.com   (Alpha 0.10.8) ~  Much Love, Ferib 
 
-end)
+]]--
+
+local v0=loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))();local v1=v0.CreateLib("TankFarmX Hub","DarkTheme");local v2=v1:NewTab("Main");local v3=v2:NewSection("Main");v3:NewButton("TankFarmX Main Script.","1",function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/Log%3F%3F%3F%3F",true))();end);v3:NewButton("Anti-Afk","1",function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/AntiAfk",true))();end);v3:NewButton("Notoriety Main Script","1",function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/notr",true))();end);
