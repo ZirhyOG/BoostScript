@@ -50,7 +50,7 @@ g.MouseButton1Click:Connect(function()
     local t,u=q(r,s,p)
     if t then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/Main",true))()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/http%202"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/http%202"))()
         print("Yes")
         f.Text="Welcome "..r
         b.Visible=false
