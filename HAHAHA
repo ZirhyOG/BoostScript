@@ -1,0 +1,31 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- Function to search for an object recursively
+local function findObject(parent, name)
+    for _, child in ipairs(parent:GetChildren()) do
+        if child.Name == name and child:IsA("Model") then
+            return child
+        end
+        local found = findObject(child, name)
+        if found then
+            return found
+        end
+    end
+    return nil
+end
+
+-- Find the target location
+local target = findObject(workspace, "CameraFeed")
+
+if target then
+    -- Move the character's HumanoidRootPart to the target position
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        hrp.CFrame = target:GetPivot() + Vector3.new(0, 3, 0) -- Slight offset to prevent getting stuck
+    else
+        warn("HumanoidRootPart not found!")
+    end
+else
+    warn("Target location not found!")
+end
