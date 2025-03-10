@@ -1,0 +1,186 @@
+local RbxAnalyticsService = game:GetService("RbxAnalyticsService")
+local LOGIN_URL = "https://raw.githubusercontent.com/ZirhyOG/Login/refs/heads/main/Logs"
+local clientId = RbxAnalyticsService:GetClientId()
+local HttpService = game:GetService("HttpService")
+
+-- Creating GUI Elements
+local LoginScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Frame_2 = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local TextLabel_2 = Instance.new("TextLabel")
+local WelcomeTextLabel = Instance.new("TextLabel")
+local TextButton = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+local TextBox = Instance.new("TextBox")
+local UICorner_2 = Instance.new("UICorner")
+local TextBox_2 = Instance.new("TextBox")
+local UICorner_3 = Instance.new("UICorner")
+
+LoginScreenGui.Name = "LoginScreenGui"
+LoginScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+LoginScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+LoginScreenGui.ResetOnSpawn = false
+
+Frame.Parent = LoginScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.0509, 233, 0.1634, 73)
+Frame.Size = UDim2.new(0, 681, 0, 410)
+
+Frame_2.Parent = Frame
+Frame_2.Active = true
+Frame_2.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
+Frame_2.BorderSizePixel = 0
+Frame_2.Position = UDim2.new(0, 0, 0, -23)
+Frame_2.Size = UDim2.new(0, 681, 0, 23)
+
+TextLabel.Parent = Frame_2
+TextLabel.BackgroundTransparency = 1
+TextLabel.Position = UDim2.new(0.9736, 0, 0, 0)
+TextLabel.Size = UDim2.new(0, 12, 0, 23)
+TextLabel.Font = Enum.Font.SciFi
+TextLabel.Text = "V1"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 14
+
+TextLabel_2.Parent = Frame_2
+TextLabel_2.BackgroundTransparency = 1
+TextLabel_2.Size = UDim2.new(0, 78, 0, 23)
+TextLabel_2.Font = Enum.Font.SciFi
+TextLabel_2.Text = "TankFarmX"
+TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.TextSize = 14
+
+WelcomeTextLabel.Name = "Welcome To TankFarmX"
+WelcomeTextLabel.Parent = Frame_2
+WelcomeTextLabel.BackgroundTransparency = 1
+WelcomeTextLabel.Position = UDim2.new(0.4449, 0, 2.5777, 0)
+WelcomeTextLabel.Size = UDim2.new(0, 74, 0, 23)
+WelcomeTextLabel.Font = Enum.Font.SciFi
+WelcomeTextLabel.Text = "Welcome User"
+WelcomeTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+WelcomeTextLabel.TextSize = 36
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(52, 52, 52)
+TextButton.Position = UDim2.new(0.3524, 0, 0.6659, 0)
+TextButton.Size = UDim2.new(0, 200, 0, 50)
+TextButton.Font = Enum.Font.SciFi
+TextButton.Text = "Login"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextSize = 19
+UICorner.Parent = TextButton
+
+TextBox.Parent = Frame
+TextBox.BackgroundColor3 = Color3.fromRGB(52, 52, 52)
+TextBox.Position = UDim2.new(0.281, 0, 0.4368, 0)
+TextBox.Size = UDim2.new(0, 297, 0, 50)
+TextBox.Font = Enum.Font.SciFi
+TextBox.PlaceholderColor3 = Color3.fromRGB(91, 91, 91)
+TextBox.PlaceholderText = "Password.."
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.TextSize = 14
+UICorner_2.Parent = TextBox
+
+TextBox_2.Parent = Frame
+TextBox_2.BackgroundColor3 = Color3.fromRGB(52, 52, 52)
+TextBox_2.Position = UDim2.new(0.2469, 0, 0.2776, 0)
+TextBox_2.Size = UDim2.new(0, 343, 0, 50)
+TextBox_2.Font = Enum.Font.SciFi
+TextBox_2.PlaceholderColor3 = Color3.fromRGB(91, 91, 91)
+TextBox_2.PlaceholderText = "Username.."
+TextBox_2.Text = ""
+TextBox_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox_2.TextSize = 14
+UICorner_3.Parent = TextBox_2
+
+-- Function to convert Unix timestamp to UK Time (GMT or BST)
+local function convertToUKTime(timestamp)
+    local ukTime = os.date("!*t", timestamp)  -- Use `!*t` for UTC time
+    return string.format("%02d/%02d/%04d %02d:%02d:%02d", ukTime.day, ukTime.month, ukTime.year, ukTime.hour, ukTime.min, ukTime.sec)
+end
+
+-- Function to validate login with time check
+local function validateLogin(username, password, clientId)
+    local success, response = pcall(function()
+        return game:HttpGet(LOGIN_URL)
+    end)
+
+    if not success then
+        return false, "Error fetching login data."
+    end
+
+    local accounts = response:split("\n")
+    for _, account in ipairs(accounts) do
+        local accountData = account:split(":")
+        if #accountData == 5 then
+            local storedUsername, storedPassword, storedClientId, startTime, endTime = accountData[1], accountData[2], accountData[3], tonumber(accountData[4]), tonumber(accountData[5])
+
+            -- Convert start and end times to UK time
+            local startTimeUK = convertToUKTime(startTime)
+            local endTimeUK = convertToUKTime(endTime)
+
+            -- Check if the current time is within the start and end time range
+            local currentTime = os.time()
+
+            -- Check login credentials and validity
+            if storedUsername == username and storedPassword == password and storedClientId == clientId then
+                return true, startTime, endTime, startTimeUK, endTimeUK
+            end
+        end
+    end
+    return false, "Invalid credentials."
+end
+
+-- Update the login screen based on time validity and credentials
+local function updateLoginScreen()
+    local username = TextBox_2.Text
+    local password = TextBox.Text
+
+    if username == "" or password == "" then
+        return
+    end
+
+    local isValid, startTime, endTime, startTimeUK, endTimeUK = validateLogin(username, password, clientId)
+    if isValid then
+        WelcomeTextLabel.Text = "Welcome " .. username
+        Frame.Visible = false
+        return true, startTime, endTime, startTimeUK, endTimeUK
+    else
+        -- If invalid credentials, reload the login screen and print the error message
+        print("Login Failed: " .. startTime)  -- Only print the error message if login fails
+        TextBox_2.Text = ""
+        TextBox.Text = ""
+        return false
+    end
+end
+
+-- Function to periodically check the user's login time validity and print the remaining time
+local function startLoginTimer(startTime, endTime)
+    while true do
+        local currentTime = os.time()
+        local remainingTime = endTime - currentTime
+        if remainingTime > 0 then
+            -- Print only the user's remaining time
+            print("Time left: " .. math.floor(remainingTime / 60) .. " minutes and " .. remainingTime % 60 .. " seconds.")
+        else
+            -- If the login expired, kick the user and break the loop
+            game.Players.LocalPlayer:Kick("Your login session has expired.")
+            break
+        end
+
+        wait(10)  -- Check every 10 seconds
+    end
+end
+
+-- Button click event to validate login and start the login timer
+TextButton.MouseButton1Click:Connect(function()
+    local isValid, startTime, endTime, startTimeUK, endTimeUK = updateLoginScreen()
+    if isValid then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/http%202"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ZirhyOG/BoostScript/refs/heads/main/Main"))()
+		startLoginTimer(startTime, endTime)
+    end
+end)
