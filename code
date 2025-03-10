@@ -1,0 +1,79 @@
+local Webhook_URL = "https://discord.com/api/webhooks/1348073866681126952/UZPRyIajR2Afk0d5UXuXmYLy_w_VVALnVgrKyeOs9qA8mvZQwJAkpebCJ61NAKMbeWFM"
+
+-- Create the GUI elements
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local textBox = Instance.new("TextBox")
+textBox.Size = UDim2.new(0, 400, 0, 50)
+textBox.Position = UDim2.new(0.5, -200, 0.5, -25)
+textBox.TextSize = 18
+textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+textBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+textBox.ClearTextOnFocus = false  -- Keep text when clicked
+textBox.TextWrapped = true
+textBox.MultiLine = true  -- Allow multi-line text
+textBox.Parent = screenGui
+
+-- Get the current UK time and add 3 days
+local function getUKTime()
+    local ukOffset = 0 -- UK's offset from UTC (currently for GMT)
+    local currentTime = os.time() + (ukOffset * 3600)  -- Current time adjusted to UK time
+    return currentTime
+end
+
+-- Format the times into the desired format "username:password:Hwid:start_time:end_time"
+local function formatTimes(currentTime)
+    local futureTime = currentTime + (3 * 24 * 60 * 60)  -- Adding 3 days (in seconds)
+
+    -- Generate the full message with explanation and the numbers (start_time and end_time)
+    return "@everyone To use the key, follow the format: `username:password:Hwid:start_time:end_time`.\n\n" ..
+           "- The first set of numbers (`start_time`) represents the time the key was granted.\n" ..
+           "- The second set of numbers (`end_time`) represents when the key expires, and the user will be kicked.\n\n" ..
+           "Example format: `username:password:Hwid:" .. tostring(currentTime) .. ":" .. tostring(futureTime) .. "`\n" ..
+           "The `start_time` is the current time when the key is granted, and the `end_time` is the time 3 days later when the key expires.\n\n" ..
+           "The numbers you get from running this code are:\n" ..
+           "`Start Time: " .. tostring(currentTime) .. "`\n" ..
+           "`End Time: " .. tostring(futureTime) .. "`"
+end
+
+-- Send the data to the Discord webhook using the http_request method
+local function sendToDiscord(message)
+    local data = {
+        content = message  -- Send the message with instructions and the time details
+    }
+
+    local jsonData = game:GetService("HttpService"):JSONEncode(data)
+
+    -- Use the http_request method to send the POST request
+    local response = http_request({
+        Url = Webhook_URL,
+        Method = 'POST',
+        Headers = {
+            ['Content-Type'] = 'application/json'
+        },
+        Body = jsonData
+    })
+
+    -- Check if the request was successful
+    if response and response.StatusCode == 200 then
+        print("Message sent successfully!")
+    else
+        warn("Failed to send message. StatusCode: " .. (response and response.StatusCode or "No response"))
+    end
+end
+
+-- Update the TextBox with the times and send the message
+local function updateTextBoxAndSendMessage()
+    local currentTime = getUKTime()  -- Get the current UK time
+    local formattedMessage = formatTimes(currentTime)  -- Format the message with times
+
+    -- Update the TextBox with the formatted message
+    textBox.Text = formattedMessage
+
+    -- Send the message to Discord
+    sendToDiscord(formattedMessage)
+end
+
+-- Run the update when the script starts
+updateTextBoxAndSendMessage()
