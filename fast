@@ -1,0 +1,17 @@
+local __namecall; __namecall = hookmetamethod(game, "__namecall", function(self, ...)
+    if not checkcaller() then
+        if getnamecallmethod() == "FireServer" then
+            if self.Name == "Damage" then
+
+                for i = 1, 10 do
+                    __namecall(self, ...)
+                end
+            end
+            if self.Name == "Bullet" then
+                return task.wait(9e9)
+            end
+        end
+    end
+
+    return __namecall(self, ...)
+end)
