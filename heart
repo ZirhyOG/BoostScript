@@ -1,0 +1,27 @@
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+local DamageRemote = ReplicatedStorage:WaitForChild("RS_Package"):WaitForChild("Assets"):WaitForChild("Remotes"):WaitForChild("Damage")
+
+local KillAll = {
+    Enabled = true,
+    TargetPart = 'HumanoidRootPart'
+}
+
+
+while task.wait() do
+    if KillAll.Enabled then
+        local Tool = LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        if Tool ~= nil then
+            
+            for _, model in ipairs(Workspace:FindFirstChild("Police"):GetChildren()) do
+                if model:IsA("Model") and model:FindFirstChild(KillAll.TargetPart) ~= nil and model:FindFirstChildOfClass("Humanoid") ~= nil then
+                    
+                    DamageRemote:FireServer("Damage", Tool, model.Humanoid, math.huge, model[KillAll.TargetPart], Tool.Name, Vector3.new())
+                end
+            end
+        end
+    end
+end
